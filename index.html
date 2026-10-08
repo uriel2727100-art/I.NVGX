@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>HTML CSS JS</title>
+</head>
+<body>
+<h1 id="welcome">HTML CSS JS</h1>
+<p>Welcome to HTML-CSS-JS.com</p>
+<p>Online HTML, CSS and JavaScript editor 
+with instant preview.</p>
+</body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I.NovaGX - Ficha de Vuelo & Control</title>
+    <style>
+        :root {
+            --bg-color: #030712;
+            --card-bg: #0b1329;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #1e293b;
+            --success: #34d399;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text); padding: 20px; }
+
+        .app-container { max-width: 1300px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid var(--border); padding-bottom: 15px; flex-wrap: wrap; gap: 15px; }
+        .logo-container { display: flex; align-items: center; gap: 15px; }
+        .logo-container img { height: 50px; width: auto; object-fit: contain; }
+        h1 { color: var(--accent); font-size: 1.5rem; text-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
+
+        .status-badge { background: rgba(56, 189, 248, 0.1); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px; }
+
+        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .form-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .full-width { grid-column: span 1; }
+
+        .card { background-color: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        h2 { font-size: 1.1rem; margin-bottom: 15px; color: var(--text); border-left: 3px solid var(--accent); padding-left: 8px; }
+
+        .form-group { margin-bottom: 5px; }
+        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; }
+        input, select { width: 100%; padding: 9px; border-radius: 6px; border: 1px solid var(--border); background: #030712; color: var(--text); font-size: 0.9rem; }
+        input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 5px rgba(56, 189, 248, 0.3); }
+
+        button { width: 100%; background-color: var(--accent); color: #030712; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+        button:hover { background-color: var(--accent-hover); box-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
+
+        /* Checklist grid */
+        .checklist-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+        .checklist-grid label { display: flex; align-items: center; gap: 10px; color: var(--text); cursor: pointer; font-size: 0.85rem; background: #030712; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); }
+        .checklist-grid input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+        .status-warning { background: rgba(239, 68, 68, 0.1); color: #f87171; padding: 8px; border-radius: 6px; font-size: 0.85rem; text-align: center; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .status-ready { background: rgba(52, 211, 153, 0.1); color: var(--success); padding: 8px; border-radius: 6px; font-size: 0.85rem; text-align: center; border: 1px solid rgba(52, 211, 153, 0.3); }
+
+        /* Tabla */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { color: var(--accent); font-weight: 600; }
+        .delete-btn { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); padding: 4px 8px; font-size: 0.75rem; width: auto; margin: 0; }
+        .delete-btn:hover { background: #ef4444; color: white; box-shadow: none; }
+        .costo-total-box { margin-top: 15px; text-align: right; font-size: 1.1rem; color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <div class="logo-container">
+                <img src="I.NovaGX - Logo completo.png" alt="I.NovaGX Logo" onerror="this.style.display='none'">
+                <div>
+                    <h1>I.NovaGX Flight Control</h1>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Ficha de Vuelo (After Flight) & Inventario KNSU</p>
+                </div>
+            </div>
+            <div class="status-badge">SISTEMA ACTIVO</div>
+        </header>
+
+        <div class="dashboard-grid">
+            
+            <!-- PANEL 1: FICHA DE VUELO TÉCNICA -->
+            <div class="card full-width">
+                <h2>📝 Registrar Ficha de Vuelo (Pre y Post-Vuelo)</h2>
+                <form id="vueloForm">
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label>Nombre del Cohete *</label>
+                            <input type="text" id="nombreCohete" placeholder="Ej. Prototipo de Cohete 1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Clasificación del Motor (A al I) *</label>
+                            <select id="claseMotor" required>
+                                <option value="">-- Cargando motores --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Número de Motores</label>
+                            <input type="number" id="numMotores" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Altura Total (m)</label>
+                            <input type="number" id="alturaTotal" placeholder="Ej. 150">
+                        </div>
+                        <div class="form-group">
+                            <label>Velocidad Total (m/s)</label>
+                            <input type="number" id="velocidadTotal" placeholder="Ej. 45">
+                        </div>
+                        <div class="form-group">
+                            <label>Newtons (Empuje)</label>
+                            <input type="number" id="newtons" placeholder="Ej. 12">
+                        </div>
+                        <div class="form-group">
+                            <label>Presupuesto de Paracaídas ($)</label>
+                            <input type="number" id="presupuestoParacaidas" placeholder="Ej. 50">
+                        </div>
+                        <div class="form-group">
+                            <label>Longitud de Paracaídas (cm)</label>
+                            <input type="number" id="longitudParacaidas" placeholder="Ej. 30">
+                        </div>
+                        <div class="form-group">
+                            <label>Centro de Gravedad (cm)</label>
+                            <input type="number" id="centroGravedad" placeholder="Ej. 25">
+                        </div>
+                        <div class="form-group">
+                            <label>Centro de Presión (cm)</label>
+                            <input type="number" id="centroPresion" placeholder="Ej. 32">
+                        </div>
+                        <div class="form-group">
+                            <label>Margen de Estabilidad</label>
+                            <input type="number" step="0.1" id="margenEstabilidad" placeholder="Ej. 1.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Peso Total (g)</label>
+                            <input type="number" id="pesoTotal" placeholder="Ej. 120">
+                        </div>
+                        <div class="form-group">
+                            <label>Peso sin adiciones (g)</label>
+                            <input type="number" id="pesoSinAdiciones" placeholder="Ej. 85">
+                        </div>
+                        <div class="form-group">
+                            <label>Diámetro (mm)</label>
+                            <input type="number" id="diametro" placeholder="Ej. 24">
+                        </div>
+                        <div class="form-group">
+                            <label>Velocidad de Descenso (m/s)</label>
+                            <input type="number" id="velDescenso" placeholder="Ej. 5">
+                        </div>
+                        <div class="form-group">
+                            <label>Consumo de Azúcar (g) *</label>
+                            <input type="number" id="consumoAzucar" placeholder="Ej. 25" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Consumo de KNO3 (g) *</label>
+                            <input type="number" id="consumoKNO3" placeholder="Ej. 45" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Costo Total de Insumos / Motores ($) *</label>
+                            <input type="number" id="costoTotalVuelo" placeholder="Ej. 120" required>
+                        </div>
+                    </div>
+                    <button type="submit" style="margin-top: 20px;">Guardar Ficha de Vuelo</button>
+                </form>
+            </div>
+
+            <!-- PANEL 2: CHECKLIST DE VUELO -->
+            <div class="card full-width">
+                <h2>📋 Checklist de Vuelo (Pre y Post-Despegue)</h2>
+                <div class="checklist-grid">
+                    <label><input type="checkbox" class="check-item"> Simulación OpenRocket validada</label>
+                    <label><input type="checkbox" class="check-item"> Integridad estructural del fuselaje</label>
+                    <label><input type="checkbox" class="check-item"> Casing y tobera asegurados</label>
+                    <label><input type="checkbox" class="check-item"> Grano de propulsor KNSU curado y pesado</label>
+                    <label><input type="checkbox" class="check-item"> Paracaídas y cuerda de recuperación instalados</label>
+                    <label><input type="checkbox" class="check-item"> Sistema de ignición eléctrica probado</label>
+                    <label><input type="checkbox" class="check-item"> Zona de seguridad despejada</label>
+                    <label><input type="checkbox" class="check-item"> Revisión post-vuelo completada</label>
+                </div>
+                <div id="checklist-status" class="status-warning" style="margin-top: 15px;">⚠️ Checklist incompleto</div>
+            </div>
+
+            <!-- PANEL 3: HISTORIAL DE FICHAS DE VUELO -->
+            <div class="card full-width">
+                <h2>📊 Historial de Fichas de Vuelo Registradas</h2>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cohete</th>
+                                <th>Motor</th>
+                                <th>Altura</th>
+                                <th>Velocidad</th>
+                                <th>Azúcar / KNO3</th>
+                                <th>Costo Total</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historialTable">
+                            <!-- Datos dinámicos -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="costo-total-box">
+                    <h3>Gasto Acumulado en Misiones: $<span id="gastoTotal">0</span></h3>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const catalogoMotores = {
+            "Clase A": ["A7", "A6", "A5", "A4", "A3", "A2", "A1"],
+            "Clase B": ["B5", "B4", "B3", "B2", "B1"],
+            "Clase C": ["C6", "C5", "C4", "C3", "C2", "C1"],
+            "Clase D": ["D4", "D3", "D2", "D1"],
+            "Clase E": ["E8", "E7", "E6", "E5", "E4", "E3", "E2", "E1"],
+            "Clase F": ["F4", "F3", "F2", "F1"],
+            "Clase G": ["G3", "G2", "G1"],
+            "Clase H": ["H2", "H1"],
+            "Clase I": ["I2", "I1"]
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const select = document.getElementById('claseMotor');
+            if (select) {
+                select.innerHTML = '<option value="">-- Selecciona motor de la libreta --</option>';
+                for (let clase in catalogoMotores) {
+                    let optgroup = document.createElement('optgroup');
+                    optgroup.label = `${clase} (${catalogoMotores[clase].length} tipos)`;
+                    
+                    catalogoMotores[clase].forEach(motor => {
+                        let option = document.createElement('option');
+                        option.value = `${clase} - ${motor}`;
+                        option.textContent = `${motor} (${clase})`;
+                        optgroup.appendChild(option);
+                    });
+                    select.appendChild(optgroup);
+                }
+            }
+
+            cargarHistorial();
+            configurarChecklist();
+        });
+
+        function configurarChecklist() {
+            const checkboxes = document.querySelectorAll('.check-item');
+            const statusBox = document.getElementById('checklist-status');
+            if (!statusBox) return;
+
+            checkboxes.forEach(chk => {
+                chk.addEventListener('change', () => {
+                    const total = checkboxes.length;
+                    const completados = Array.from(checkboxes).filter(c => c.checked).length;
+
+                    if(completados === total) {
+                        statusBox.textContent = '🚀 ¡CHECKLIST 100% LISTO! APTO PARA VUELO';
+                        statusBox.className = 'status-ready';
+                    } else {
+                        statusBox.textContent = `⚠️ Checklist incompleto (${completados}/${total} completados)`;
+                        statusBox.className = 'status-warning';
+                    }
+                });
+            });
+        }
+
+        const form = document.getElementById('vueloForm');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const motorSeleccionado = document.getElementById('claseMotor').value;
+                if(!motorSeleccionado) {
+                    alert('Por favor selecciona una clasificación de motor.');
+                    return;
+                }
+
+                const costoTotalVuelo = parseFloat(document.getElementById('costoTotalVuelo').value) || 0;
+
+                const nuevaMision = {
+                    id: Date.now(),
+                    cohete: document.getElementById('nombreCohete').value,
+                    motor: motorSeleccionado,
+                    altura: document.getElementById('alturaTotal').value || 'N/A',
+                    velocidad: document.getElementById('velocidadTotal').value || 'N/A',
+                    azucar: document.getElementById('consumoAzucar').value || '0',
+                    kno3: document.getElementById('consumoKNO3').value || '0',
+                    costo: costoTotalVuelo
+                };
+
+                let historial = JSON.parse(localStorage.getItem('inovagx_fichas_vuelo')) || [];
+                historial.push(nuevaMision);
+                localStorage.setItem('inovagx_fichas_vuelo', JSON.stringify(historial));
+
+                form.reset();
+                // Volver a cargar los motores por si acaso
+                document.getElementById('claseMotor').value = "";
+                cargarHistorial();
+                
+                const statusBox = document.getElementById('checklist-status');
+                if(statusBox) {
+                    statusBox.textContent = '⚠️ Checklist incompleto';
+                    statusBox.className = 'status-warning';
+                }
+            });
+        }
+
+        function cargarHistorial() {
+            const tbody = document.getElementById('historialTable');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            let historial = JSON.parse(localStorage.getItem('inovagx_fichas_vuelo')) || [];
+            let gastoAcumulado = 0;
+
+            if(historial.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No hay fichas de vuelo registradas aún.</td></tr>`;
+                document.getElementById('gastoTotal').textContent = '0';
+                return;
+            }
+
+            historial.slice().reverse().forEach(mision => {
+                gastoAcumulado += mision.costo;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${mision.cohete}</strong></td>
+                    <td>${mision.motor}</td>
+                    <td>${mision.altura} m</td>
+                    <td>${mision.velocidad} m/s</td>
+                    <td>${mision.azucar}g Azúcar / ${mision.kno3}g KNO3</td>
+                    <td><strong>$${mision.costo}</strong></td>
+                    <td><button type="button" class="delete-btn" onclick="eliminarMision(${mision.id})">X</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('gastoTotal').textContent = gastoAcumulado;
+        }
+
+        function eliminarMision(id) {
+            let historial = JSON.parse(localStorage.getItem('inovagx_fichas_fuelo')) || [];
+            // Arreglar llave por si acaso
+            historial = JSON.parse(localStorage.getItem('inovagx_fichas_vuelo')) || [];
+            historial = historial.filter(m => m.id !== id);
+            localStorage.setItem('inovagx_fichas_vuelo', JSON.stringify(historial));
+            cargarHistorial();
+        }
+    </script>
+</body>
+</html>
